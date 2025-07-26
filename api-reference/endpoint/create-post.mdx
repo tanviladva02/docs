@@ -1,0 +1,111 @@
+---
+title: "Create Post"
+openapi: "POST /posts"
+---
+
+# 📝 Create Post
+
+Create a new blog post with the provided content. This endpoint allows you to create posts in different categories with optional tags and publication status.
+
+## 📝 Request Body
+
+The request body should contain the post information in JSON format:
+
+```json
+{
+  "title": "The Future of AI in Software Development",
+  "content": "Artificial Intelligence is revolutionizing the way we approach software development...",
+  "category": "technology",
+  "tags": ["ai", "software", "development"],
+  "isPublished": true
+}
+```
+
+### Required Fields
+
+- **title** (string, 5-200 characters): Post title
+- **content** (string, minimum 10 characters): Post content
+- **category** (string): Post category - one of: "technology", "lifestyle", "business", "sports"
+
+### Optional Fields
+
+- **tags** (array): Array of tags for the post
+- **isPublished** (boolean): Whether to publish immediately (default: false)
+
+## 🔄 Response
+
+### Success Response (201 Created)
+
+```json
+{
+  "id": "1",
+  "title": "The Future of AI in Software Development",
+  "content": "Artificial Intelligence is revolutionizing...",
+  "authorId": "1",
+  "category": "technology",
+  "tags": ["ai", "software", "development"],
+  "isPublished": true,
+  "publishedAt": "2024-01-15T10:30:00Z",
+  "readTime": 5,
+  "createdAt": "2024-01-15T10:30:00Z"
+}
+```
+
+### Error Response (400 Bad Request)
+
+```json
+{
+  "error": "Validation failed",
+  "message": "Title must be between 5 and 200 characters",
+  "details": {
+    "title": "Title is too short"
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+## 💡 Examples
+
+### Technology Post
+
+```bash
+curl -X POST https://api.dummyapi.com/v1/posts \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "title": "The Future of AI in Software Development",
+    "content": "Artificial Intelligence is revolutionizing the way we approach software development. From automated testing to intelligent code completion, AI tools are becoming indispensable for modern developers.",
+    "category": "technology",
+    "tags": ["ai", "software", "development"],
+    "isPublished": true
+  }'
+```
+
+### Draft Post
+
+```bash
+curl -X POST https://api.dummyapi.com/v1/posts \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "title": "My Personal Journey",
+    "content": "This is a personal story about my journey in the tech industry and the lessons I learned along the way.",
+    "category": "lifestyle",
+    "tags": ["personal", "journey"],
+    "isPublished": false
+  }'
+```
+
+## 🔒 Authentication
+
+This endpoint requires authentication. Include your JWT token in the Authorization header:
+
+```
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+
+## 📚 Related Endpoints
+
+- [Get Posts](/api-reference/endpoint/get) - Retrieve all posts
+- [Get Posts by Category](/api-reference/endpoint/get-posts) - Filter posts by category
+- [Update Post](/api-reference/endpoint/update-post) - Modify existing post

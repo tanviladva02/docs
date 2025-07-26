@@ -1,0 +1,107 @@
+---
+title: "User Login"
+openapi: "POST /auth/login"
+---
+
+# 🔐 User Login
+
+Authenticate a user and return an access token for API access. This endpoint validates user credentials and provides JWT-based authentication.
+
+## 📝 Request Body
+
+The request body should contain login credentials in JSON format:
+
+```json
+{
+  "email": "john@example.com",
+  "password": "securepassword123"
+}
+```
+
+### Required Fields
+
+- **email** (string, valid email format): User's email address
+- **password** (string, minimum 8 characters): User's password
+
+## 🔄 Response
+
+### Success Response (200 OK)
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+  "user": {
+    "id": "1",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "user",
+    "status": "active"
+  },
+  "expiresAt": "2024-01-16T17:15:00Z"
+}
+```
+
+### Error Response (401 Unauthorized)
+
+```json
+{
+  "error": "Invalid credentials",
+  "message": "Email or password is incorrect",
+  "timestamp": "2024-01-16T09:15:00Z"
+}
+```
+
+## 💡 Examples
+
+### Valid Login
+
+```bash
+curl -X POST https://api.dummyapi.com/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@example.com",
+    "password": "securepassword123"
+  }'
+```
+
+### Invalid Login
+
+```bash
+curl -X POST https://api.dummyapi.com/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "wrong@example.com",
+    "password": "wrongpassword"
+  }'
+```
+
+## 🔒 Security Features
+
+- **JWT Tokens**: Secure, stateless authentication
+- **Password Hashing**: Passwords are securely hashed using bcrypt
+- **Token Expiration**: Tokens expire after 24 hours by default
+- **Rate Limiting**: Login attempts are rate-limited to prevent brute force attacks
+
+## 📋 Using the Token
+
+After successful login, include the token in subsequent API requests:
+
+```bash
+curl -X GET https://api.dummyapi.com/v1/users \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+## 🔄 Token Refresh
+
+To refresh an expired token, use the refresh endpoint:
+
+```bash
+curl -X POST https://api.dummyapi.com/v1/auth/refresh \
+  -H "Authorization: Bearer YOUR_EXPIRED_TOKEN"
+```
+
+## 📚 Related Endpoints
+
+- [Create User](/api-reference/endpoint/create) - Register new user
+- [Logout](/api-reference/endpoint/logout) - Invalidate token
+- [Refresh Token](/api-reference/endpoint/refresh) - Get new token

@@ -1,0 +1,546 @@
+openapi: 3.0.0
+info:
+  title: Dummy API
+  description: A comprehensive dummy API for testing and demonstration purposes
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@dummyapi.com
+servers:
+  - url: https://api.dummyapi.com/v1
+    description: Production server
+  - url: https://staging-api.dummyapi.com/v1
+    description: Staging server
+
+paths:
+  /users:
+    get:
+      summary: Get all users
+      description: Retrieve a list of all users
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: List of users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+              examples:
+                default:
+                  summary: Sample response
+                  value:
+                    data:
+                      - id: "1"
+                        name: "John Doe"
+                        email: "john@example.com"
+                        role: "user"
+                        createdAt: "2024-01-15T10:30:00Z"
+                      - id: "2"
+                        name: "Jane Smith"
+                        email: "jane@example.com"
+                        role: "admin"
+                        createdAt: "2024-01-14T15:45:00Z"
+                    total: 2
+                    page: 1
+                    limit: 10
+    post:
+      summary: Create a new user
+      description: Create a new user account with the provided information
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequest"
+            examples:
+              basic:
+                summary: Basic user creation
+                value:
+                  name: "John Doe"
+                  email: "john@example.com"
+                  password: "securepassword123"
+                  role: "user"
+              admin:
+                summary: Admin user creation
+                value:
+                  name: "Admin User"
+                  email: "admin@example.com"
+                  password: "adminpass123"
+                  role: "admin"
+                  permissions: ["read", "write", "delete"]
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+              examples:
+                default:
+                  summary: Created user
+                  value:
+                    id: "3"
+                    name: "John Doe"
+                    email: "john@example.com"
+                    role: "user"
+                    createdAt: "2024-01-16T09:15:00Z"
+                    status: "active"
+        "400":
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                validation_error:
+                  summary: Validation error
+                  value:
+                    error: "Validation failed"
+                    message: "Email is required and must be valid"
+                    details:
+                      email: "Email field is required"
+        "409":
+          description: Conflict - user already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      description: Retrieve a specific user by their unique identifier
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: User ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /posts:
+    get:
+      summary: Get all posts
+      description: Retrieve a list of all blog posts
+      parameters:
+        - name: author
+          in: query
+          description: Filter by author ID
+          required: false
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Filter by category
+          required: false
+          schema:
+            type: string
+            enum: [technology, lifestyle, business, sports]
+      responses:
+        "200":
+          description: List of posts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Post"
+                  total:
+                    type: integer
+              examples:
+                default:
+                  summary: Sample posts
+                  value:
+                    data:
+                      - id: "1"
+                        title: "Getting Started with API Development"
+                        content: "This is a comprehensive guide..."
+                        authorId: "1"
+                        category: "technology"
+                        publishedAt: "2024-01-15T10:30:00Z"
+                        readTime: 5
+                    total: 1
+    post:
+      summary: Create a new post
+      description: Create a new blog post with the provided content
+      tags:
+        - Posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePostRequest"
+            examples:
+              tech_post:
+                summary: Technology post
+                value:
+                  title: "The Future of AI in Software Development"
+                  content: "Artificial Intelligence is revolutionizing..."
+                  category: "technology"
+                  tags: ["ai", "software", "development"]
+                  isPublished: true
+              draft_post:
+                summary: Draft post
+                value:
+                  title: "My Personal Journey"
+                  content: "This is a personal story about..."
+                  category: "lifestyle"
+                  tags: ["personal", "journey"]
+                  isPublished: false
+      responses:
+        "201":
+          description: Post created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/login:
+    post:
+      summary: User login
+      description: Authenticate a user and return access token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                password:
+                  type: string
+                  description: User's password
+                  minLength: 8
+            examples:
+              valid_login:
+                summary: Valid login credentials
+                value:
+                  email: "john@example.com"
+                  password: "securepassword123"
+              invalid_login:
+                summary: Invalid login credentials
+                value:
+                  email: "wrong@example.com"
+                  password: "wrongpassword"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT access token
+                  user:
+                    $ref: "#/components/schemas/User"
+                  expiresAt:
+                    type: string
+                    format: date-time
+              examples:
+                success:
+                  summary: Successful login
+                  value:
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    user:
+                      id: "1"
+                      name: "John Doe"
+                      email: "john@example.com"
+                      role: "user"
+                    expiresAt: "2024-01-16T17:15:00Z"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /files/upload:
+    post:
+      summary: Upload file
+      description: Upload a file to the server
+      tags:
+        - Files
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File to upload
+                description:
+                  type: string
+                  description: Optional file description
+            examples:
+              image_upload:
+                summary: Image upload
+                value:
+                  file: "(binary)"
+                  description: "Profile picture"
+              document_upload:
+                summary: Document upload
+                value:
+                  file: "(binary)"
+                  description: "Resume document"
+      responses:
+        "201":
+          description: File uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  filename:
+                    type: string
+                  url:
+                    type: string
+                  size:
+                    type: integer
+                  uploadedAt:
+                    type: string
+                    format: date-time
+              examples:
+                success:
+                  summary: Upload success
+                  value:
+                    id: "file_123"
+                    filename: "profile.jpg"
+                    url: "https://cdn.dummyapi.com/files/profile.jpg"
+                    size: 1024000
+                    uploadedAt: "2024-01-16T10:30:00Z"
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique user identifier
+        name:
+          type: string
+          description: User's full name
+        email:
+          type: string
+          format: email
+          description: User's email address
+        role:
+          type: string
+          enum: [user, admin, moderator]
+          description: User's role in the system
+        status:
+          type: string
+          enum: [active, inactive, suspended]
+          default: active
+          description: User's account status
+        createdAt:
+          type: string
+          format: date-time
+          description: Account creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+      required:
+        - id
+        - name
+        - email
+        - role
+
+    CreateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 100
+          description: User's full name
+        email:
+          type: string
+          format: email
+          description: User's email address
+        password:
+          type: string
+          minLength: 8
+          description: User's password
+        role:
+          type: string
+          enum: [user, admin]
+          default: user
+          description: User's role
+        permissions:
+          type: array
+          items:
+            type: string
+          description: Additional permissions for admin users
+      required:
+        - name
+        - email
+        - password
+
+    Post:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique post identifier
+        title:
+          type: string
+          description: Post title
+        content:
+          type: string
+          description: Post content
+        authorId:
+          type: string
+          description: ID of the post author
+        category:
+          type: string
+          enum: [technology, lifestyle, business, sports]
+          description: Post category
+        tags:
+          type: array
+          items:
+            type: string
+          description: Post tags
+        isPublished:
+          type: boolean
+          default: false
+          description: Publication status
+        publishedAt:
+          type: string
+          format: date-time
+          description: Publication timestamp
+        readTime:
+          type: integer
+          description: Estimated reading time in minutes
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+      required:
+        - id
+        - title
+        - content
+        - authorId
+
+    CreatePostRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 5
+          maxLength: 200
+          description: Post title
+        content:
+          type: string
+          minLength: 10
+          description: Post content
+        category:
+          type: string
+          enum: [technology, lifestyle, business, sports]
+          description: Post category
+        tags:
+          type: array
+          items:
+            type: string
+          description: Post tags
+        isPublished:
+          type: boolean
+          default: false
+          description: Whether to publish immediately
+      required:
+        - title
+        - content
+        - category
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: object
+          description: Additional error details
+        timestamp:
+          type: string
+          format: date-time
+          description: Error timestamp
+      required:
+        - error
+        - message
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for API authentication

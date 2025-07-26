@@ -1,0 +1,130 @@
+---
+title: "Upload File"
+openapi: "POST /files/upload"
+---
+
+# 📁 Upload File
+
+Upload a file to the server. This endpoint supports various file types and provides secure file storage with CDN integration.
+
+## 📝 Request Body
+
+The request should be sent as `multipart/form-data`:
+
+```bash
+curl -X POST https://api.dummyapi.com/v1/files/upload \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "file=@/path/to/your/file.jpg" \
+  -F "description=Profile picture"
+```
+
+### Form Fields
+
+- **file** (binary, required): The file to upload
+- **description** (string, optional): Description of the file
+
+## 🔄 Response
+
+### Success Response (201 Created)
+
+```json
+{
+  "id": "file_123",
+  "filename": "profile.jpg",
+  "url": "https://cdn.dummyapi.com/files/profile.jpg",
+  "size": 1024000,
+  "uploadedAt": "2024-01-16T10:30:00Z",
+  "mimeType": "image/jpeg",
+  "description": "Profile picture"
+}
+```
+
+### Error Response (400 Bad Request)
+
+```json
+{
+  "error": "File upload failed",
+  "message": "File size exceeds maximum limit of 10MB",
+  "timestamp": "2024-01-16T10:30:00Z"
+}
+```
+
+## 💡 Examples
+
+### Image Upload
+
+```bash
+curl -X POST https://api.dummyapi.com/v1/files/upload \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "file=@profile.jpg" \
+  -F "description=User profile picture"
+```
+
+### Document Upload
+
+```bash
+curl -X POST https://api.dummyapi.com/v1/files/upload \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "file=@resume.pdf" \
+  -F "description=Resume document"
+```
+
+### Multiple Files (Not Supported)
+
+This endpoint only supports single file uploads. For multiple files, make separate requests.
+
+## 📋 Supported File Types
+
+### Images
+
+- JPEG, JPG
+- PNG
+- GIF
+- WebP
+- SVG
+
+### Documents
+
+- PDF
+- DOC, DOCX
+- TXT
+- CSV
+
+### Archives
+
+- ZIP
+- RAR
+- 7Z
+
+## 🔒 Security & Limits
+
+- **File Size**: Maximum 10MB per file
+- **Authentication**: Required for all uploads
+- **Virus Scanning**: All files are scanned for malware
+- **CDN**: Files are served through a global CDN for fast access
+- **Backup**: Files are automatically backed up to multiple locations
+
+## 📊 File Management
+
+### File URLs
+
+Uploaded files are accessible via their CDN URLs:
+
+```
+https://cdn.dummyapi.com/files/{filename}
+```
+
+### File Deletion
+
+To delete an uploaded file:
+
+```bash
+curl -X DELETE https://api.dummyapi.com/v1/files/{file_id} \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+## 📚 Related Endpoints
+
+- [Get File Info](/api-reference/endpoint/get-file) - Get file metadata
+- [Delete File](/api-reference/endpoint/delete-file) - Remove file
+- [List Files](/api-reference/endpoint/list-files) - Get user's files

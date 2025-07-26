@@ -1,4 +1,114 @@
 ---
-title: 'Create Plant'
-openapi: 'POST /plants'
+title: "Create User"
+openapi: "POST /users"
 ---
+
+# 👤 Create User
+
+Create a new user account with the provided information. This endpoint allows you to register new users with different roles and permissions.
+
+## 📝 Request Body
+
+The request body should contain the user information in JSON format:
+
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "securepassword123",
+  "role": "user",
+  "permissions": ["read", "write"]
+}
+```
+
+### Required Fields
+
+- **name** (string, 2-100 characters): User's full name
+- **email** (string, valid email format): User's email address
+- **password** (string, minimum 8 characters): User's password
+
+### Optional Fields
+
+- **role** (string): User role - either "user" (default) or "admin"
+- **permissions** (array): Additional permissions for admin users
+
+## 🔄 Response
+
+### Success Response (201 Created)
+
+```json
+{
+  "id": "3",
+  "name": "John Doe",
+  "email": "john@example.com",
+  "role": "user",
+  "status": "active",
+  "createdAt": "2024-01-16T09:15:00Z"
+}
+```
+
+### Error Responses
+
+#### 400 Bad Request - Validation Error
+
+```json
+{
+  "error": "Validation failed",
+  "message": "Email is required and must be valid",
+  "details": {
+    "email": "Email field is required"
+  },
+  "timestamp": "2024-01-16T09:15:00Z"
+}
+```
+
+#### 409 Conflict - User Already Exists
+
+```json
+{
+  "error": "User already exists",
+  "message": "A user with this email address already exists",
+  "timestamp": "2024-01-16T09:15:00Z"
+}
+```
+
+## 💡 Examples
+
+### Basic User Creation
+
+```bash
+curl -X POST https://api.dummyapi.com/v1/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "securepassword123"
+  }'
+```
+
+### Admin User Creation
+
+```bash
+curl -X POST https://api.dummyapi.com/v1/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Admin User",
+    "email": "admin@example.com",
+    "password": "adminpass123",
+    "role": "admin",
+    "permissions": ["read", "write", "delete"]
+  }'
+```
+
+## 🔒 Security Considerations
+
+- Passwords are automatically hashed before storage
+- Email addresses are validated for proper format
+- Duplicate email addresses are not allowed
+- Admin users require additional verification in production
+
+## 📚 Related Endpoints
+
+- [Get Users](/api-reference/endpoint/get) - Retrieve all users
+- [Get User by ID](/api-reference/endpoint/get-user) - Get specific user details
+- [User Login](/api-reference/endpoint/login) - Authenticate user
