@@ -1,178 +1,36 @@
 ---
-title: "Introduction"
-description: "Example section for showcasing API endpoints"
+title: "API Overview"
+description: "Get started with our developer-first, production-ready REST API for building scalable platforms."
 ---
 
 <Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
+  💡 This is your launchpad to the API universe. If you're not building on the
+  API, feel free to remove this section by deleting the `api-reference` folder.
 </Note>
 
-# 🚀 Dummy API Reference
+# 🧠 Welcome to the [YourCompany] API
 
-Welcome to the comprehensive Dummy API documentation. This API provides a complete set of endpoints for user management, content creation, authentication, and file handling.
+**Build. Automate. Scale.**  
+The **[YourCompany] API** unlocks the full power of our platform — giving you secure access to users, projects, files, auth flows, and more. This RESTful interface is designed for developers who want precision, performance, and flexibility out of the box.
 
-## 📋 API Overview
+---
 
-The Dummy API is a RESTful service that provides the following core functionalities:
+## 🌐 Environments
 
-- **User Management**: Create, retrieve, and manage user accounts
-- **Content Management**: Create and manage blog posts
-- **Authentication**: Secure JWT-based authentication system
-- **File Upload**: Secure file storage with CDN integration
+| Type       | Base URL                                 |
+| ---------- | ---------------------------------------- |
+| Production | `https://api.yourcompany.com/v1`         |
+| Staging    | `https://staging-api.yourcompany.com/v1` |
+| Sandbox    | `https://sandbox-api.yourcompany.com/v1` |
 
-## 🔗 Base URLs
+> 🧪 Use the **Sandbox** for safe testing with dummy data, no billing risk.
 
-| Environment | URL                                   |
-| ----------- | ------------------------------------- |
-| Production  | `https://api.dummyapi.com/v1`         |
-| Staging     | `https://staging-api.dummyapi.com/v1` |
+---
 
 ## 🔐 Authentication
 
-Most endpoints require authentication using JWT tokens. Include your token in the Authorization header:
+All endpoints (unless noted otherwise) require a **JWT Bearer Token** in the `Authorization` header.
 
-```bash
-Authorization: Bearer YOUR_JWT_TOKEN
+```http
+Authorization: Bearer <your_jwt_token>
 ```
-
-To get a token, use the [Login endpoint](/api-reference/endpoint/login).
-
-## 📊 Response Format
-
-All API responses follow a consistent JSON format:
-
-### Success Response
-
-```json
-{
-  "data": { ... },
-  "message": "Success",
-  "timestamp": "2024-01-16T10:30:00Z"
-}
-```
-
-### Error Response
-
-```json
-{
-  "error": "Error type",
-  "message": "Human-readable error message",
-  "details": { ... },
-  "timestamp": "2024-01-16T10:30:00Z"
-}
-```
-
-## 📝 HTTP Status Codes
-
-| Code | Description                              |
-| ---- | ---------------------------------------- |
-| 200  | OK - Request successful                  |
-| 201  | Created - Resource created successfully  |
-| 400  | Bad Request - Invalid request data       |
-| 401  | Unauthorized - Authentication required   |
-| 403  | Forbidden - Insufficient permissions     |
-| 404  | Not Found - Resource not found           |
-| 409  | Conflict - Resource already exists       |
-| 422  | Unprocessable Entity - Validation failed |
-| 500  | Internal Server Error - Server error     |
-
-## 🔗 Available Endpoints
-
-### 👤 User Management
-
-| Method | Endpoint      | Description                   |
-| ------ | ------------- | ----------------------------- |
-| `GET`  | `/users`      | Get all users with pagination |
-| `POST` | `/users`      | Create a new user account     |
-| `GET`  | `/users/{id}` | Get user by ID                |
-
-### 📝 Content Management
-
-| Method | Endpoint | Description                  |
-| ------ | -------- | ---------------------------- |
-| `GET`  | `/posts` | Get all posts with filtering |
-| `POST` | `/posts` | Create a new blog post       |
-
-### 🔐 Authentication
-
-| Method | Endpoint      | Description                     |
-| ------ | ------------- | ------------------------------- |
-| `POST` | `/auth/login` | Authenticate user and get token |
-
-### 📁 File Management
-
-| Method | Endpoint        | Description   |
-| ------ | --------------- | ------------- |
-| `POST` | `/files/upload` | Upload a file |
-
-## 💡 Quick Start
-
-1. **Create a user account**:
-
-   ```bash
-   curl -X POST https://api.dummyapi.com/v1/users \
-     -H "Content-Type: application/json" \
-     -d '{
-       "name": "John Doe",
-       "email": "john@example.com",
-       "password": "securepassword123"
-     }'
-   ```
-
-2. **Login to get a token**:
-
-   ```bash
-   curl -X POST https://api.dummyapi.com/v1/auth/login \
-     -H "Content-Type: application/json" \
-     -d '{
-       "email": "john@example.com",
-       "password": "securepassword123"
-     }'
-   ```
-
-3. **Create a blog post**:
-   ```bash
-   curl -X POST https://api.dummyapi.com/v1/posts \
-     -H "Content-Type: application/json" \
-     -H "Authorization: Bearer YOUR_TOKEN" \
-     -d '{
-       "title": "My First Post",
-       "content": "This is my first blog post!",
-       "category": "lifestyle"
-     }'
-   ```
-
-## 🔒 Rate Limiting
-
-- **Free Tier**: 100 requests per hour
-- **Pro Tier**: 1000 requests per hour
-- **Enterprise**: Custom limits
-
-Rate limit headers are included in all responses:
-
-```
-X-RateLimit-Limit: 100
-X-RateLimit-Remaining: 95
-X-RateLimit-Reset: 1642334400
-```
-
-## 📚 SDKs & Libraries
-
-Official SDKs are available for popular programming languages:
-
-- [JavaScript/Node.js](https://github.com/dummyapi/js-sdk)
-- [Python](https://github.com/dummyapi/python-sdk)
-- [PHP](https://github.com/dummyapi/php-sdk)
-- [Ruby](https://github.com/dummyapi/ruby-sdk)
-
-## 🆘 Support
-
-- **Documentation**: [docs.dummyapi.com](https://docs.dummyapi.com)
-- **Email**: support@dummyapi.com
-- **Discord**: [Join our community](https://discord.gg/dummyapi)
-- **GitHub**: [Report issues](https://github.com/dummyapi/api/issues)
-
-## 📄 License
-
-This API is provided under the MIT License. See our [Terms of Service](https://dummyapi.com/terms) for more details.
